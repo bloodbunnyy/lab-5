@@ -1,7 +1,8 @@
+import { useState } from "react";
+
 function Task(props) {
 
 	console.log(props);
-
 	function onChange() {
 		props.setTasks(tasks => tasks.map(task => {
 			if (task.id === props.id) {
@@ -14,9 +15,14 @@ function Task(props) {
 				return task;
 			}
 		}));
+	}
+
+	function onClick() {
+		props.setTasks(tasks => tasks.filter(task => task.id !== props.id));
+	}
 
 	return (
-		<li>
+		<li><button type="button" onClick={onClick}>X</button>
 			{ props.description } 
 			<input
 				type="checkbox" 
@@ -29,9 +35,25 @@ function Task(props) {
 
 function List(props) {
 
+	const [newTask, setNewTask] = useState("");
+	function onChange(event)
+	{
+		setNewTask(event.target.value);
+	}
+	function onClick() 
+	{
+		props.setTasks(tasks =>[...tasks,{ id:tasks.length+1,
+											description:newTask,
+											completed:false}]);
+	}
+
 	return (
 		<div>
 			<h1>{ props.heading }</h1>
+			<b> Add Task </b><input type="text"
+									placeholder="Add a new task"
+									onChange={onChange}/>
+			<button type="button" onClick={onClick}>Add</button>
 			<ul>
 				{ props.tasks.map(task => 
 					<Task
